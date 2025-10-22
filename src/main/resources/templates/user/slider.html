@@ -1,0 +1,230 @@
+
+<div th:fragment="sliderview">
+    <style>
+        .slider-container {
+               width: 100vw; /* full viewport width */
+            height: 80vh; /* adjust height as needed */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: #f6b4b4;
+    /* f6b4b4 */
+    transition: opacity 0.5s ease-in-out;
+}
+
+        .slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(144, 3, 3, 0.8);
+          
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+        }
+
+        .nav-button {
+            background: rgba(144, 3, 3, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button:hover {
+            background: rgba(24, 6, 6, 0.95);
+        }
+
+        .dots-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+        }
+    </style>
+
+    <div class="slider-container">
+        <!-- Slides -->
+        <div class="slide active">
+            <img th:src="@{/images/mainphoto.png}" alt="Main Photo">
+            <div class="slide-caption">
+                <h2>Welcome to Our Store</h2>
+                <p>Discover amazing deals on trending products</p>
+            </div>
+        </div>
+        <div class="slide">
+            <img th:src="@{/images/mens1.png}" alt="Men's Fashion">
+            <div class="slide-caption">
+                <h2>Men's Collection</h2>
+                <p>Check out our latest men's fashion</p>
+            </div>
+        </div>
+        <div class="slide">
+            <img th:src="@{/images/products.png}" alt="Products">
+            <div class="slide-caption">
+                <h2>Premium Men's Wear</h2>
+                <p>Quality clothing for the modern man</p>
+            </div>
+        </div>
+        <div class="slide">
+            <img th:src="@{/images/womens1.png}" alt="Women's Fashion">
+            <div class="slide-caption">
+                <h2>Women's Collection</h2>
+                <p>Explore our women's fashion line</p>
+            </div>
+        </div>
+        <div class="slide">
+            <img th:src="@{/images/womens2.png}" alt="Women's Fashion 2">
+            <div class="slide-caption">
+                <h2>Trendy Women's Wear</h2>
+                <p>Stay stylish with our latest arrivals</p>
+            </div>
+        </div>
+
+          <div class="slide">
+            <img th:src="@{/images/Unisex.png}" alt="Unisex Fashion">
+            <div class="slide-caption">
+                <h2>Fashion Hub</h2>
+                <p>Stay stylish with our latest arrivals</p>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="slider-nav">
+            <button class="nav-button prev text-white">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="nav-button next text-white ">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Dots Navigation -->
+        <div class="dots-container">
+            <div class="dot active" data-slide="0"></div>
+            <div class="dot" data-slide="1"></div>
+            <div class="dot" data-slide="2"></div>
+            <div class="dot" data-slide="3"></div>
+            <div class="dot" data-slide="4"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            const prevButton = document.querySelector('.prev');
+            const nextButton = document.querySelector('.next');
+            let currentSlide = 0;
+            let slideInterval;
+
+            function showSlide(index) {
+                // Remove active class from all slides and dots
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+
+                // Add active class to current slide and dot
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            function startSlideShow() {
+                stopSlideShow(); // Clear any existing interval
+                slideInterval = setInterval(nextSlide, 3000); // Change slide every 3 seconds
+            }
+
+            function stopSlideShow() {
+                if (slideInterval) {
+                    clearInterval(slideInterval);
+                }
+            }
+
+            // Event Listeners
+            prevButton.addEventListener('click', () => {
+                prevSlide();
+                startSlideShow(); // Reset the timer
+            });
+
+            nextButton.addEventListener('click', () => {
+                nextSlide();
+                startSlideShow(); // Reset the timer
+            });
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentSlide = index;
+                    showSlide(currentSlide);
+                    startSlideShow(); // Reset the timer
+                });
+            });
+
+            // Start the slideshow
+            startSlideShow();
+
+            // Optional: Pause on hover
+            const sliderContainer = document.querySelector('.slider-container');
+            sliderContainer.addEventListener('mouseenter', stopSlideShow);
+            sliderContainer.addEventListener('mouseleave', startSlideShow);
+        });
+    </script>
+</div>

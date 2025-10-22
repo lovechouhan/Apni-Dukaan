@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ layout:decorate="~{base}">
+<head>
+    <title>Update Seller Profile - ApniDukkan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-red-300 py-8 px-4">
+        <div class="mb-6">
+            <a th:href="@{/seller/settings}" class="inline-flex items-center bg-red-800 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>Back
+            </a>
+        </div>
+        <div class="max-w-3xl mx-auto">
+            <!-- Header -->
+            <div class="flex items-center mb-6">
+                <i class="fas fa-store text-3xl text-red-800 mr-3"></i>
+                <h1 class="text-2xl font-bold text-gray-900">Update Seller Profile</h1>
+                   
+                <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Simplified Form (no section restructuring) -->
+            <div class="bg-gray-100 rounded-lg shadow-lg overflow-hidden">
+                <form th:action="@{/seller/settings/updateInfo}" method="post" th:object="${sellerForm}"
+                       enctype="multipart/form-data" class="p-6 space-y-4">
+                    <!-- Business Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Business Name*</label>
+                        <input type="text" th:field="*{bussinessDetails.businessName}" 
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                  
+
+                    <!-- Contact Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Contact Name*</label>
+                        <input type="text" th:field="*{SellerName}" 
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- Email -->
+                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email Address {Read Only}</label>
+                        <input type="email" th:field="*{email}"  readonly
+                               class="w-full rounded-md border-gray-300 bg-gray-50 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number*</label>
+                        <input type="tel" th:field="*{phoneNumber}"  pattern="[0-9]{10}"
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                        <p class="mt-1 text-sm text-gray-500">10-digit mobile number</p>
+                    </div>
+
+                    <!-- Street Address -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Street Address*</label>
+                        <input type="text" th:field="*{pickupAddress.streetAddress}" 
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- City -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">City*</label>
+                        <input type="text" th:field="*{pickupAddress.city}" 
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- State -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">State*</label>
+                        <input type="text" th:field="*{pickupAddress.state}" 
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- Pincode -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Pincode*</label>
+                        <input type="text" th:field="*{pickupAddress.zipCode}"  pattern="[0-9]{6}"
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- Country (readonly) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                        <input type="text" value="India" readonly
+                               class="w-full rounded-md border-gray-300 bg-gray-50"/>
+                    </div>
+
+                    <!-- Bank Details: Account Holder -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Account Holder Name*</label>
+                        <input type="text" th:field="*{bankDetails.accountHolderName}" 
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- Bank Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Bank Name*</label>
+                        <input type="text" th:field="*{bankDetails.bankName}" 
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- Account Number -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Account Number*</label>
+                        <input type="text" th:field="*{bankDetails.accountNumber}"  pattern="[0-9]+"
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+                    
+                        <!-- Business Address -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
+                            <input type="text" th:field="*{bussinessDetails.businessAddress}"
+                                   class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                        </div>
+
+                        <!-- Business Email -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Email</label>
+                            <input type="email" th:field="*{bussinessDetails.businessEmail}"
+                                   class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                        </div>
+
+                        <!-- Business Contact -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Contact</label>
+                            <input type="tel" th:field="*{bussinessDetails.businessContact}" pattern="[0-9]{10}"
+                                   class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                            <p class="mt-1 text-sm text-gray-500">10-digit contact number</p>
+                        </div>
+
+                    <!-- IFSC -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">IFSC Code*</label>
+                        <input type="text" th:field="*{bankDetails.ifscCode}"  pattern="^[A-Z]{4}0[A-Z0-9]{6}$"
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                        <p class="mt-1 text-sm text-gray-500">11-character IFSC code</p>
+                    </div>
+
+                    <!-- Profile Picture -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
+                        <!-- Bind to MultipartFile field on SellerForm to avoid String conversion errors -->
+                        <input type="file" th:field="*{profilePic}" accept="image/*"
+                               class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"/>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center justify-end space-x-3 pt-4 border-t">
+                        <button type="button" onclick="history.back()"
+                                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="px-6 py-2 bg-red-800 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                            Update Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

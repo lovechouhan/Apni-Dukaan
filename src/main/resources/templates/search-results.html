@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}"></html>
+<head>
+    <title>Search Products - E-Store</title>
+</head>
+<body>
+    <div layout:fragment="content" class="container p-4">
+      <!-- Search Form -->
+      <div class="card mb-4">
+        <div class="card-body">
+            <form th:action="@{/search}" method="get" class="row g-3">
+              <!-- Filters -->
+              <div class="col-md-3">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    <option value="men" th:selected="${criteria?.category == 'men'}">Men</option>
+                    <option value="women" th:selected="${criteria?.category == 'women'}">Women</option>
+                    <option value="kids" th:selected="${criteria?.category == 'kids'}">Kids</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Min Price</label>
+                <input type="number" 
+                     name="minPrice" 
+                     th:value="${criteria?.minPrice}"
+                     class="form-control"
+                     placeholder="Min Price">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Max Price</label>
+                <input type="number" 
+                     name="maxPrice" 
+                     th:value="${criteria?.maxPrice}"
+                     class="form-control"
+                     placeholder="Max Price">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Sort By</label>
+                <select name="sortBy" class="form-select">
+                    <option value="name" th:selected="${criteria?.sortBy == 'name'}">Name</option>
+                    <option value="MRPprice" th:selected="${criteria?.sortBy == 'MRPprice'}">Price</option>
+                    <option value="createdAt" th:selected="${criteria?.sortBy == 'createdAt'}">Newest</option>
+                </select>
+              </div>
+            </form>
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+        <div th:each="product : ${products}" class="col">
+            <div class="card h-100">
+              <img th:src="${product.images}" 
+                 class="card-img-top" 
+                 style="height: 200px; object-fit: cover;"
+                 alt="Product Image">
+              <div class="card-body">
+                <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+                <p class="card-text" th:text="${product.description}">Description</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">₹<span th:text="${product.MRPprice}">Price</span></h6>
+                    <button class="btn btn-primary btn-sm">Add to Cart</button>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <nav th:if="${products.totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${!products.hasPrevious()} ? disabled">
+              <a class="page-link" 
+                 th:href="@{/search(page=${products.number - 1}, size=${criteria.pageSize}, 
+                         keyword=${criteria.keyword}, category=${criteria.category}, 
+                         minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice}, 
+                         sortBy=${criteria.sortBy})}">Previous</a>
+            </li>
+            <li class="page-item" 
+              th:each="pageNumber : ${#numbers.sequence(0, products.totalPages - 1)}"
+              th:classappend="${pageNumber == products.number} ? active">
+              <a class="page-link" 
+                 th:href="@{/search(page=${pageNumber}, size=${criteria.pageSize}, 
+                         keyword=${criteria.keyword}, category=${criteria.category}, 
+                         minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice}, 
+                         sortBy=${criteria.sortBy})}"
+                 th:text="${pageNumber + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${!products.hasNext()} ? disabled">
+              <a class="page-link" 
+                 th:href="@{/search(page=${products.number + 1}, size=${criteria.pageSize}, 
+                         keyword=${criteria.keyword}, category=${criteria.category}, 
+                         minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice}, 
+                         sortBy=${criteria.sortBy})}">Next</a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+</body>
+</html>

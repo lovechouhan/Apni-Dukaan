@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+<head>
+    <title>About Us - Apni Dukaan</title>
+</head>
+<body>
+<div layout:fragment="content" class="min-h-screen overflow-auto bg-red-300">
+    
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r border-white bg-red-300 text-black py-16">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl text-black md:text-5xl font-bold mb-4">About <span class="text-black">Apni Dukaan</span></h1>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto opacity-90">
+                Your one-stop destination for the latest fashion, unbeatable prices, and quality products delivered to your doorstep.
+            </p>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-12 bg-white rounded-t-[40px]"></div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+            <img src="https://cdn-icons-png.flaticon.com/512/891/891462.png" alt="Our Mission" class="w-64 mx-auto animate-bounce">
+            <div>
+                <h2 class="text-3xl font-semibold text-gray-800 mb-4">Our Mission</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    At <strong>Apni Dukaan</strong>, our mission is to make online shopping easy, affordable, and enjoyable for everyone. 
+                    We’re dedicated to connecting customers with trusted sellers while providing an intuitive and secure platform for all your fashion needs.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section class="py-16 bg-red-300">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+            <div>
+                <h2 class="text-3xl font-semibold text-gray-800 mb-4">Our Vision</h2>
+                <p class="text-gray-600 leading-relaxed">
+                    To become India’s most loved and trusted online fashion store by offering top-quality products, 
+                    seamless user experience, and outstanding customer support. We believe in empowering both buyers and sellers.
+                </p>
+            </div>
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Our Vision" class="w-64 mx-auto">
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-8">Why Choose Us?</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-200 hover:bg-red-300 shadow-md rounded-2xl p-8 hover:shadow-lg transition">
+                    <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Quality Products" class="w-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Quality Products</h3>
+                    <p class="text-gray-600">We partner with verified sellers to ensure every item meets high-quality standards.</p>
+                </div>
+
+                <div class="bg-gray-200 shadow-md rounded-2xl p-8 hover:shadow-lg transition">
+                    <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png" alt="Fast Delivery" class="w-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Fast & Safe Delivery</h3>
+                    <p class="text-gray-600">Your products are delivered swiftly with real-time tracking and secure packaging.</p>
+                </div>
+
+                <div class="bg-gray-200 shadow-md rounded-2xl p-8 hover:shadow-lg transition">
+                    <img src="https://cdn-icons-png.flaticon.com/512/709/709496.png" alt="Customer Support" class="w-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">24/7 Support</h3>
+                    <p class="text-gray-600">Our dedicated support team is always ready to assist you anytime, anywhere.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Call to Action -->
+    <section class="py-16  bg-gradient-to-r bg-red-300  text-black text-center">
+        <h2 class="text-3xl text-black font-semibold mb-4">Join the Apni Dukaan Family Today!</h2>
+        <p class="mb-6 text-black text-lg">Shop smart, sell better — and be part of India’s fastest-growing online marketplace.</p>
+        <a th:href="@{/user/products}" class="bg-red-800 text-white font-semibold px-8 py-3 rounded-full shadow-md hover:bg-gray-800 transition">
+            Start Shopping
+        </a>
+    </section>
+
+</div>
+</body>
+</html>

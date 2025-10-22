@@ -1,0 +1,135 @@
+
+
+<!-- Backdrop overlay for mobile sidebar -->
+<div id="sidebar-backdrop" class="fixed inset-0 z-40 hidden bg-black bg-opacity-40"></div>
+
+<!-- Viewport meta tag for responsive design -->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover" />
+      
+<!-- Responsive Sidebar -->
+<aside th:fragment="sidebar"
+       id="logo-sidebar"
+       class="fixed left-0 top-0 z-40
+              w-64 max-w-full
+              h-screen
+              transform transition-transform duration-300
+              -translate-x-full
+              bg-red-800 text-white dark:bg-gray-800
+              pb-[env(safe-area-inset-bottom)]"
+       aria-label="Sidebar">
+
+<script th:inline="javascript">
+// Sidebar toggle logic for all screens
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('logo-sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    if (sidebar && toggleBtn) {  // Only initialize if elements exist
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            if (backdrop) backdrop.classList.remove('hidden');
+        }
+        
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            if (backdrop) backdrop.classList.add('hidden');
+        }
+        
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+        });
+        
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+                closeSidebar();
+            }
+        });
+        
+        if (backdrop) {
+            backdrop.addEventListener('click', closeSidebar);
+        }
+        
+        // Close sidebar on ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeSidebar();
+        });
+    }
+});
+</script>
+  <div class="flex flex-col h-full px-3 py-4">
+    <a href="/" class="flex flex-col items-center ps-2.5 mb-5">
+      <img src="/images/ApniDukkan.png" class="h-20 rounded-full me-3 sm:h-16" alt="Logo"/>
+      
+    </a>
+    <ul class="space-y-2 font-medium">
+      <li>
+        <a th:href="@{'/user/dashboard'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/dashboard.png}" alt="Dashboard" class="w-5 h-5 me-2">
+          <span class="ms-3">Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/user/main'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/cart.png}" alt="Cart" class="w-5 h-5 me-2">
+          <span class="ms-3">home</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/user/products'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/add-user.png}" alt="Profile" class="w-5 h-5 me-2">
+          <span class="ms-3">Products</span>
+        </a>
+      </li>
+       <!-- product detail -->
+
+      <li>
+        <a th:href="@{'/user/cart'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/plus.png}" alt="Add Contact" class="w-5 h-5 me-2">
+          <span class="ms-3">cart</span>
+        </a>
+      </li>
+      
+      <li>
+        <a th:href="@{'/user/orders'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/contacts.png}" alt="Contacts" class="w-5 h-5 me-2">
+          <span class="ms-3">Orders</span>
+        </a>
+      </li>
+      
+
+      <li>
+        <a th:href="@{'/user/checkout'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/contacts.png}" alt="Contacts" class="w-5 h-5 me-2">
+          <span class="ms-3">Checkout</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/logout'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/logout.png}" alt="Logout" class="w-5 h-5 me-2">
+          <span class="ms-3">Logout</span>
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/user/settings'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/social-media.png}" alt="Settings" class="w-5 h-5 me-2">
+          <span class="ms-3">Settings</span>
+
+        </a>
+      </li>
+      <li>
+        <a th:href="@{'/sellers/getProducts'}" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+          <img th:src="@{/images/support.png}" alt="Support" class="w-5 h-5 me-2">
+          <span class="ms-3">Seller Products</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</aside>

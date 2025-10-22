@@ -1,0 +1,42 @@
+<!-- src/main/resources/templates/checkout/payment.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - Payment</title>
+</head>
+<body >
+
+<div layout:fragment="content" class="max-w-3xl mx-auto px-6 py-10">
+
+    <!-- Stepper -->
+    <div class="flex justify-between items-center mb-10">
+        <!-- Step 1 -->
+        <div class="flex flex-col items-center">
+            <span class="text-gray-500">1</span>
+            <span class="font-medium text-gray-500">Shipping</span>
+        </div>
+        <div class="flex-1 border-t-2 border-gray-300 mx-2"></div>
+
+        <!-- Step 2 (Active) -->
+        <div class="flex flex-col items-center">
+            <span class="text-blue-600 font-bold">2</span>
+            <span class="font-medium text-blue-600">Payment</span>
+        </div>
+        <div class="flex-1 border-t-2 border-gray-300 mx-2"></div>
+
+        <!-- Step 3 -->
+        <div class="flex flex-col items-center">
+            <span class="text-gray-500">3</span>
+            <span class="font-medium text-gray-500">Order Summary</span>
+        </div>
+    </div>
+
+    <!-- Payment Form -->
+   
+</div>
+
+</body>
+</html>

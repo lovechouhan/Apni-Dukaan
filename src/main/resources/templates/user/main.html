@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - E-Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ 
+</head>
+<body class="bg-red-300" >
+
+<div layout:fragment="content" class="min-h-screen overflow-auto">
+
+    <!-- Slider Section -->
+
+    <div class="slider-container w-1.5" th:replace="~{user/slider :: sliderview}"></div>
+
+    <!-- Hero Section -->
+    <section class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-amber-700 mt-12 rounded-xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <!-- Left Content -->
+            <div class="space-y-6">
+                <div class="inline-block bg-blue-100 text-red-800 px-4 py-2 rounded-full text-sm font-semibold">
+                    Best Deals This Week
+                </div>
+                <h1 class="text-4xl lg:text-5xl font-bold text-gray-900">
+                    Discover Amazing <br>
+                    Products Today!
+                </h1>
+                <div class="flex items-center space-x-4">
+                    <div class="flex -space-x-2">
+                        <img src="/images/shirt.jpeg" class="w-8 h-8 rounded-full border-2 border-white" alt="User" />
+                        <img src="/images/watch.jpeg" class="w-8 h-8 rounded-full border-2 border-white" alt="User" />
+                        <img src="/images/ear.jpeg" class="w-8 h-8 rounded-full border-2 border-white" alt="User" />
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <span class="font-semibold text-yellow-500">★★★★★</span>
+                        <span>(2.5k Reviews)</span>
+                    </div>
+                </div>
+                <a th:href="@{/user/products}" class="bg-red-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-900 transition inline-block">
+                    Shop Now
+                </a>
+            </div>
+            <!-- Right Content -->
+            <div class="relative">
+                <img src="/images/Giga.png" alt="Featured Product" class="w-full h-auto max-w-lg shadow-md mx-auto rounded-lg" />
+               
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl font-bold text-gray-900">Browse by Category</h2>
+            <p class="text-gray-600 mt-2">Find what you're looking for</p>
+        </div>
+      <div th:if="${not #lists.isEmpty(products)}" class="grid grid-cols-0 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Product Card -->
+            <div th:each="product : ${products}" class="bg-red-100 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <div class="relative h-80 w-full bg-red-100">
+                    <div class="w-full h-full flex items-center justify-center">
+                        <img th:if="${product.images != null and product.images != ''}" 
+                             th:src="@{${product.images}}" 
+                             class="max-h-full max-w-full object-contain hover:opacity-75 cursor-pointer rounded-lg p-2" 
+                             alt="Product Image" />
+                        <div th:if="${product.images == null or product.images == ''}" 
+                             class="text-gray-400 text-center">
+                            <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="mt-2">No image available</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-4">
+                    <h3 th:text="${product.name}" class="text-lg font-semibold text-gray-800 line-clamp-1"></h3>
+                    <p th:text="${product.description}" class="text-sm text-gray-600 mt-1 line-clamp-2"> </p>
+                    
+                    <div class="mt-3">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-lg font-bold text-gray-900" th:text="${'₹' + product.sellingPrice}"></span>
+                            <span th:if="${product.MRPprice > product.sellingPrice}" class="text-sm text-gray-500 line-through" th:text="${'₹' + product.MRPprice}"></span>
+                            <span th:if="${product.discountPrice > 0}" class="text-sm text-green-600 ml-2" th:text="${'Save ₹' + (product.MRPprice - product.sellingPrice)}"></span>
+                        </div>
+                        
+                    </div>
+
+                    <div class="mt-4 flex flex-col gap-2">
+                        <a th:href="@{/user/products/view/{id}(id=${product.id})}"
+                           class="w-full bg-red-800 text-white text-center py-2 rounded-md hover:bg-gray-900 transition-colors">
+                            View Details
+                        </a>
+
+                        <!-- AI Summary button -->
+                        <button type="button"
+                                th:onclick="|openAISummary(${product.id})|"
+                                class="w-full bg-gray-900 text-white text-center py-2 rounded-md hover:bg-red-800 transition-colors">
+                           AI Summary
+                        </button>
+
+                        <!-- Add to Wishlist button -->
+                        <button type="button"
+                                class="w-full flex items-center justify-center gap-2 border border-gray-300 text-gray-700 py-2 rounded-md hover:bg-gray-50 transition-colors wishlist-btn"
+                                th:attr="data-product-id=${product.id}"
+                                title="Add to wishlist"
+                                aria-label="Add to wishlist">
+                            <i class="fa-regular fa-heart"></i>
+                            <span>Add to wishlist</span>
+                        </button>
+
+                    </div>
+               
+
+                  
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    
+
+    <!-- Close content fragment wrapper -->
+    </div>
+
+
+
+
+       
+
+
+
+
+
+<!-- Lightweight wishlist client-side helper -->
+<script>
+    (function(){
+        const storageKey = 'wishlist';
+        function loadWishlist(){
+            try { return new Set(JSON.parse(localStorage.getItem(storageKey) || '[]')); } catch(e){ return new Set(); }
+        }
+        function saveWishlist(set){
+            localStorage.setItem(storageKey, JSON.stringify(Array.from(set)));
+        }
+        function updateButtonState(btn, wished){
+            const icon = btn.querySelector('i');
+            if(!icon) return;
+            if(wished){
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid','text-red-600');
+                btn.title = 'In wishlist';
+                btn.setAttribute('aria-label','In wishlist');
+            } else {
+                icon.classList.add('fa-regular');
+                icon.classList.remove('fa-solid','text-red-600');
+                btn.title = 'Add to wishlist';
+                btn.setAttribute('aria-label','Add to wishlist');
+            }
+        }
+        function init(){
+            const wished = loadWishlist();
+            document.querySelectorAll('.wishlist-btn').forEach(btn => {
+                const id = btn.getAttribute('data-product-id');
+                const isWished = wished.has(id);
+                updateButtonState(btn, isWished);
+                btn.addEventListener('click', async () => {
+                    const currently = wished.has(id);
+                    if(currently){ wished.delete(id); } else { wished.add(id); }
+                    saveWishlist(wished);
+                    updateButtonState(btn, !currently);
+                    // Optional: attempt to sync with backend if endpoint exists
+                    try {
+                        const method = currently ? 'DELETE' : 'POST';
+                        await fetch(`/user/wishlist/${id}`, { method, headers: { 'X-Requested-With':'XMLHttpRequest' } });
+                    } catch (_) { /* ignore if backend not available */ }
+                });
+            });
+        }
+        if(document.readyState === 'loading'){
+            document.addEventListener('DOMContentLoaded', init);
+        } else { init(); }
+    })();
+    </script>
+
+</body>
+</html>

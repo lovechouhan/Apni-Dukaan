@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ layout:decorate="~{base}">
+<head>
+    <title>Notification Settings</title>
+</head>
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-gray-50">
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Notification Settings</h1>
+            
+            <!-- Success Message -->
+            <div th:if="${message}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
+                <span th:text="${message}"></span>
+            </div>
+
+            <!-- Settings Navigation -->
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-1/4">
+                    <nav class="flex flex-col space-y-1">
+                        <a href="/user/settings" 
+                           class="text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg">
+                           General Settings
+                        </a>
+                        <a href="/user/settings/preferences" 
+                           class="text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg">
+                           Display Preferences
+                        </a>
+                        <a href="/user/settings/notifications" 
+                           class="text-white bg-indigo-600 px-4 py-2 rounded-lg font-medium">
+                           Notifications
+                        </a>
+                        <a href="/user/settings/privacy" 
+                           class="text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg">
+                           Privacy
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="w-full md:w-3/4">
+                    <form th:action="@{/user/settings}" method="post" th:object="${settings}" class="space-y-6">
+                        <!-- Email Notifications -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="border-b border-gray-200 px-4 py-3">
+                                <h3 class="text-lg font-medium text-gray-900">Email Notifications</h3>
+                            </div>
+                            <div class="p-4 space-y-4">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="emailNotifications" th:field="*{emailNotifications}"
+                                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                    <label for="emailNotifications" class="ml-2 text-gray-700">Enable Email Notifications</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="orderUpdates" th:field="*{orderUpdates}"
+                                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                    <label for="orderUpdates" class="ml-2 text-gray-700">Order Status Updates</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="promotionalEmails" th:field="*{promotionalEmails}"
+                                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                    <label for="promotionalEmails" class="ml-2 text-gray-700">Promotional Emails</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SMS Notifications -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="border-b border-gray-200 px-4 py-3">
+                                <h3 class="text-lg font-medium text-gray-900">SMS Notifications</h3>
+                            </div>
+                            <div class="p-4 space-y-4">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="smsNotifications" th:field="*{smsNotifications}"
+                                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                    <label for="smsNotifications" class="ml-2 text-gray-700">Enable SMS Notifications</label>
+                                </div>
+                                <p class="text-sm text-gray-500">SMS charges may apply based on your carrier.</p>
+                            </div>
+                        </div>
+
+                        <!-- Security Notifications -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="border-b border-gray-200 px-4 py-3">
+                                <h3 class="text-lg font-medium text-gray-900">Security Notifications</h3>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="twoFactorAuth" th:field="*{twoFactorAuth}"
+                                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                    <label for="twoFactorAuth" class="ml-2 text-gray-700">Enable Two-Factor Authentication</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full md:w-auto px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

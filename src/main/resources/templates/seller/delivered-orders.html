@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+  <meta charset="UTF-8" />
+  <title>Delivered Orders - Seller</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    
+    <div class="min-h-screen bg-red-300 py-8 px-4 sm:px-6 lg:px-8">
+      <div class="w-full bg-white shadow-xl rounded p-6 lg:p-8">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6 border-b pb-4">
+          <h2 class="text-2xl font-bold text-gray-800">Delivered Orders</h2>
+          <span class="text-sm text-gray-500" th:text="'Total: ' + ${#lists.size(deliveredOrders)} + ' orders'">Total: 10 orders</span>
+        </div>
+
+        <!-- No orders found -->
+        <div th:if="${deliveredOrders == null or #lists.isEmpty(deliveredOrders)}" 
+             class="text-center text-gray-500 py-10">
+          <p class="text-lg">No delivered orders found.</p>
+        </div>
+
+        <!-- Orders Table -->
+        <div th:if="${deliveredOrders != null and !#lists.isEmpty(deliveredOrders)}" class="overflow-x-auto w-full">
+          <table class="min-w-full w-full border-collapse">
+            <thead>
+              <tr class="bg-gray-100 text-left text-gray-700">
+                <th class="py-3 px-4 text-sm font-semibold">S.No</th>
+                <th class="py-3 px-4 text-sm font-semibold">Order ID</th>
+                <th class="py-3 px-4 text-sm font-semibold">Buyer</th>
+                <th class="py-3 px-4 text-sm font-semibold">Items</th>
+                <th class="py-3 px-4 text-sm font-semibold">Total</th>
+                <th class="py-3 px-4 text-sm font-semibold">Delivered On</th>
+                <th class="py-3 px-4 text-sm font-semibold text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr th:each="order, stat : ${deliveredOrders}" 
+                  class="hover:bg-gray-50 transition-all duration-150">
+                <td class="py-3 px-4 text-gray-600" th:text="${stat.index + 1}">1</td>
+                <td class="py-3 px-4 font-semibold text-gray-800" th:text="${order.orderId}">ORD-123</td>
+                <td class="py-3 px-4 text-gray-700" th:text="${order?.user?.name} ?: '—'">Buyer Name</td>
+                <td class="py-3 px-4">
+                  <ul class="space-y-1">
+                    <li th:each="item : ${order.orderItems}" class="text-gray-600 text-sm">
+                      <span class="font-medium text-gray-800" 
+                            th:text="${item?.product?.name} ?: 'Product'">Product</span>
+                      × <span th:text="${item.quantity}">1</span>
+                      <small th:text="${item.sellingPrice != null ? '(@' + item.sellingPrice + ')' : ''}"></small>
+                    </li>
+                  </ul>
+                </td>
+                <td class="py-3 px-4 font-semibold text-gray-800"
+                    th:text="${'₹' + (#numbers.formatDecimal(order.totalAmount != null ? order.totalAmount : 0, 1, 'COMMA', 2, 'POINT'))}">₹0.00</td>
+                <td class="py-3 px-4">
+                  <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium" 
+                        th:text="${order.deliveryDate != null ? #temporals.format(order.deliveryDate, 'dd MMM yyyy') : '—'}">22 Oct 2025</span>
+                </td>
+                <td class="py-3 px-4 text-center">
+                  <a th:href="@{/sellers/ordersDelivered/{id}(id=${order.id})}"
+                     class="inline-block bg-red-800 hover:bg-gray-900 text-white text-sm px-4 py-2 rounded-lg shadow transition">
+                    View Details
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

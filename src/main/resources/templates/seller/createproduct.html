@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ layout:decorate="~{base}">
+<head>
+   
+    <title>create Product</title>
+</head>
+<body>
+    <div layout:fragment="content" class="min-h-screen overflow-auto">
+   
+
+    <form th:object="${products}" th:action="@{/sellers/products/add}" method="post" enctype="multipart/form-data" class="max-w-md mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Add New Product</h2>
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700">Product Name</label>
+            <input type="text"  name="name" class="w-full border rounded px-3 py-2" required>
+        </div>
+        <div class="mb-4">
+            <label for="description" class="block text-gray-700">Description</label>
+            <textarea  name="description" class="w-full border rounded px-3 py-2" rows="3" required></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="MRPprice" class="block text-gray-700">MRP Price</label>
+            <input type="number"  name="MRPprice" class="w-full border rounded px-3 py-2"  min="50" required>
+        </div>
+        <div class="mb-4">
+            <label for="sellingPrice" class="block text-gray-700">Selling Price</label>
+            <input type="number"  name="sellingPrice" class="w-full border rounded px-3 py-2"  min="50" required>
+        </div>
+        <div class="mb-4">
+            <label for="discountPrice" class="block text-gray-700">Discount Price</label>
+            <input type="number"  name="discountPrice" class="w-full border rounded px-3 py-2"  min="50" max="5000">
+        </div>
+
+        <div class="mb-4">
+            <label for="color" class="block text-gray-700">Color</label>
+            <input type="text"  name="color" class="w-full border rounded px-3 py-2">
+        </div>
+        
+        <div class="mb-4">
+            <label for="quantity" class="block text-gray-700">Quantity</label>
+            <input type="number"  name="quantity" class="w-full border rounded px-3 py-2" min="1" required>
+        </div>
+        <div class="mb-4">
+            <label for="category" class="block text-gray-700">Category</label>
+            <select name="category" class="w-full border rounded px-3 py-2" required>
+                <option value="">Select Category</option>
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+                <option value="kids">Kids</option>
+                <option value="electronics">Electronics</option>
+                <option value="accessories">Accessories</option>
+                <option value="footwear">Footwear</option>
+                <option value="bags">Bags</option>
+                <option value="audio">Audio</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="brand" class="block text-gray-700">Brand</label>
+            <input type="text"  name="brand" class="w-full border rounded px-3 py-2">
+        </div>
+       <div class="mb-4">
+            <label for="images" class="block text-gray-700">Product Image</label>
+            <input type="file" name="images" class="w-full border rounded px-3 py-2" accept="image/*">
+        </div>
+        <button type="submit" class="bg-red-800 text-white px-4 py-2 rounded hover:bg-gray-900">Add Product</button>
+    </form>
+
+
+
+    </div>
+
+</body>
+</html>

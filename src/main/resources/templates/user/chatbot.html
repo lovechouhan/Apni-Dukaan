@@ -1,0 +1,185 @@
+<div th:fragment="chatbot">
+    <!-- Chatbot Toggle Button -->
+    <div  class="fixed bottom-5 right-5 bg-gray-900 text-white w-16 h-16 rounded-full shadow-lg z-50 cursor-pointer flex items-center justify-center">
+        <h1 class="sr-only">Chatbot Toggle</h1>
+        <i class="fa-solid fa-robot h-fit"></i>
+    </div>
+
+    <!-- Chatbot Window -->
+    <div class="fixed bottom-24 right-5 bg-white rounded-lg shadow-lg z-50 w-80 hidden">
+        <!-- Header -->
+        <div class="bg-gray-900 text-white p-4 rounded-t-lg flex justify-between items-center">
+            <h3 class="font-semibold">Shopping Sakhaa</h3>
+            <span class="text-2xl cursor-pointer">&times;</span>
+        </div>
+        
+        <!-- Messages Container -->
+        <div id="chat-messages" class="h-96 overflow-y-auto p-4 space-y-4">
+            <!-- Initial Bot Message -->
+            <div class="message bg-gray-300 p-3 rounded-lg max-w-[80%]">
+                Hello! I'm your shopping assistant. How can I help you today?
+            </div>
+        </div>
+
+        <div th:if="${responseTEXT}">
+            <div th:each="resp : ${responseTEXT}" class="message bg-gray-100 p-3 rounded-lg max-w-[80%]">
+                <span th:text="${resp}"></span>
+            </div>
+        </div>
+
+
+        <!-- Input Area -->
+       <form th:action="@{/stream}" method="post" id="chatForm" class="p-4 border-t">
+           <div class="flex items-center gap-2">
+               <input type="text" 
+                   id="userInput" 
+                   name="inputText"
+                   class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:border-red-800" 
+                   placeholder="Type your message..."
+                   required
+               >
+
+               <button type="submit" 
+                   id="sendButton"
+                   class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-colors"
+               >
+                   Send
+               </button>
+
+               
+           </div>
+       </form>
+    </div>
+
+    <style>
+        .message {
+            margin-bottom: 1rem;
+            word-wrap: break-word;
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            width: fit-content;
+        }
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background: #6b7280;
+            border-radius: 50%;
+            animation: typing-bounce 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing-bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+        .user-message {
+            background-color: #040527;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        #chat-messages {
+            display: flex;
+            flex-direction: column;
+        }
+        #chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+        #chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: #970404;
+            border-radius: 5px;
+        }
+        #close-chat {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+    </style>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+    const chatToggle = document.querySelector('.fixed.bottom-5.right-5'); // Chat button
+    const chatWindow = document.querySelector('.fixed.bottom-24.right-5'); // Chat window
+    const closeChat = chatWindow.querySelector('span'); // Close icon
+    const userInput = document.getElementById('userInput');
+    const chatForm = document.getElementById('chatForm');
+    const messagesContainer = document.getElementById('chat-messages');
+
+    // Toggle chat window
+    chatToggle.addEventListener('click', () => {
+        chatWindow.classList.toggle('hidden');
+        if (!chatWindow.classList.contains('hidden')) {
+            userInput.focus();
+        }
+    });
+
+    // Close chat window
+    closeChat.addEventListener('click', () => {
+        chatWindow.classList.add('hidden');
+    });
+
+    // 🧠 Handle message sending (Streaming)
+    chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    // 1️⃣ Add user message to UI
+    const userMsg = document.createElement('div');
+    userMsg.className = 'message user-message p-3 rounded-lg max-w-[80%]';
+    userMsg.textContent = message;
+    messagesContainer.appendChild(userMsg);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // 2️⃣ Create bot message placeholder
+    const botMsg = document.createElement('div');
+    botMsg.className = 'message bg-gray-100 p-3 rounded-lg max-w-[80%]';
+    botMsg.innerHTML = `
+      <div class="typing-indicator">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+    `;
+    messagesContainer.appendChild(botMsg);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // 3️⃣ Clear input
+    userInput.value = '';
+
+    // 4️⃣ Send to backend WITH current page context
+    const currentPage = window.location.href;  // <- here
+    const response = await fetch(`/stream?inputText=${encodeURIComponent(message)}&page=${encodeURIComponent(currentPage)}`, {
+        method: 'POST'
+    });
+
+    // 5️⃣ Read streaming response
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = "";
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        fullText += decoder.decode(value, { stream: true });
+        botMsg.innerHTML = `<div>${fullText}</div>`;
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+});
+
+});
+
+    </script>
+</div>
+          
+  
+

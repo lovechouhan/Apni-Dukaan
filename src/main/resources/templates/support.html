@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ layout:decorate="~{base}">
+<head>
+
+    <title>Support</title>
+</head>
+<body>
+        <div layout:fragment="content" class="min-h-screen overflow-auto">
+            <div class="max-w-3xl mx-auto py-6 px-4">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <!-- Header -->
+                    <div class="bg-gray-900 text-white px-4 py-3 flex items-center gap-3">
+                        <img th:src="@{/images/ApniDukkan.png}" alt="Logo" class="w-8 h-8 rounded" />
+                        <div>
+                            <div class="font-semibold">Apni Dukan Support</div>
+                            <div class="text-xs opacity-90">Online • Ask anything about products, orders, returns</div>
+                        </div>
+                    </div>
+
+                    <!-- Messages -->
+                    <div id="support-chat-messages" class="h-[60vh] md:h-[70vh] overflow-y-auto p-4 space-y-3 bg-gray-50">
+                        <!-- Messages will be appended here -->
+                    </div>
+
+                    <!-- Input -->
+                    <div class="border-t p-3 bg-white">
+                        <form th:action="@{/api/support/query}" method="post" id="support-chat-form" class="flex items-center gap-2">
+                            <input id="support-chat-input" name="question" type="text" placeholder="Type your message..." class="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" required />
+                            <button type="submit" class="bg-gray-900 hover:bg-green-700 text-white px-4 py-2 rounded-full">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        
+
+                <!-- Response Modal -->
+                <div id="support-response-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+                    <div class="bg-gray-900 w-11/12 max-w-2xl rounded-2xl p-5 relative shadow-xl">
+                        <button id="support-modal-close" type="button" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+                        <h3 class="text-lg font-semibold mb-2">AI Response</h3>
+                        <div id="support-modal-content" class="text-gray-800 whitespace-pre-wrap max-h-[60vh] overflow-y-auto"></div>
+                    </div>
+                </div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    // Use support-specific IDs to avoid collision with floating chatbot IDs used in base layout
+    const messagesEl = document.getElementById('support-chat-messages');
+    const formEl = document.getElementById('support-chat-form');
+    const inputEl = document.getElementById('support-chat-input');
+        const history = [];
+
+    function appendMessage(role, text) {
+        const wrapper = document.createElement('div');
+        const isUser = role === 'user';
+        wrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+        const bubble = document.createElement('div');
+        bubble.className = `${isUser ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} max-w-[80%] rounded-2xl px-4 py-2 shadow`;
+        bubble.textContent = text;
+        wrapper.appendChild(bubble);
+        messagesEl.appendChild(wrapper);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+                // Greeting from assistant on load (optional to show in thread)
+                appendMessage('assistant', "Hi! I'm your shopping assistant. Ask me about products, orders, returns, or anything you need help with.");
+                history.push({ role: 'assistant', content: "Hi! I'm your shopping assistant. Ask me about products, orders, returns, or anything you need help with." });
+
+        // Modal helpers
+        const modal = document.getElementById('support-response-modal');
+        const modalContent = document.getElementById('support-modal-content');
+        const modalClose = document.getElementById('support-modal-close');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            // ensure flex centering applies
+            modal.classList.add('flex');
+        }
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            modalContent.textContent = '';
+        }
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+        });
+
+    formEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = inputEl.value.trim();
+        if (!text) return;
+        inputEl.value = '';
+
+        // Show user message in the thread (right aligned)
+        appendMessage('user', text);
+        history.push({ role: 'user', content: text });
+
+            // Prepare assistant bubble (left aligned) and show typing indicator
+            const wrap = document.createElement('div');
+            wrap.className = 'flex justify-start';
+            const bubble = document.createElement('div');
+            bubble.className = 'bg-white text-gray-800 max-w-[80%] rounded-2xl px-4 py-2 shadow whitespace-pre-wrap';
+            bubble.innerHTML = '<div class="inline-flex items-center gap-1 text-gray-500">Assistant is typing<span class="typing-dots ml-2"><span></span><span></span><span></span></span></div>';
+            wrap.appendChild(bubble);
+            messagesEl.appendChild(wrap);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            try {
+                const base = /*[[@{/}]]*/ '/';
+                const url = base.replace(/\/$/, '') + '/api/support/query';
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ question: text })
+                });
+
+                if (!resp.ok) {
+                    const errText = await resp.text();
+                    throw new Error('Server error ' + resp.status + ': ' + errText);
+                }
+
+                // Stream the response (Flux<String>)
+                const reader = resp.body?.getReader();
+                const decoder = new TextDecoder();
+                bubble.textContent = '';
+
+                if (reader) {
+                    let buffer = '';
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        const chunk = decoder.decode(value, { stream: true });
+                        buffer += chunk;
+
+                        // If backend is SSE, lines start with "data:" per event; otherwise plain text chunks
+                                                                        const parts = buffer.split(/\n\n/); // SSE events separated by blank line
+                        // Keep the last partial segment in buffer
+                        buffer = parts.pop() || '';
+                        for (const p of parts) {
+                          const line = p.replace(/^data:\s*/gm, '').trimEnd();
+                                                                            bubble.textContent += line + '\n';
+                        }
+                        // For plain chunking (non-SSE), also append as it comes
+                        if (!resp.headers.get('content-type')?.includes('text/event-stream')) {
+                                                                            bubble.textContent += chunk;
+                        }
+
+                                                messagesEl.scrollTop = messagesEl.scrollHeight;
+                    }
+                                        bubble.textContent = bubble.textContent.trimEnd();
+                } else {
+                    // Fallback if body streaming not available
+                    const full = await resp.text();
+                                        bubble.textContent = full || 'Sorry, I could not respond right now.';
+                }
+
+                                    history.push({ role: 'assistant', content: bubble.textContent });
+
+            } catch (err) {
+                                    bubble.textContent = 'There was an error connecting to support. Please try again in a moment.';
+            }
+    });
+/*]]>*/
+</script>
+
+</div>
+
+</body>
+</html>

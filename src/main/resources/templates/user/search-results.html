@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Products - E-Store</title>
+</head>
+<body>
+<div layout:fragment="content" class="min-h-screen bg-red-300 p-6">
+
+  <!-- Search Filters -->
+  <div class="bg-red-300 rounded-2xl  p-6 mb-6">
+    <form th:action="@{/search}" method="get" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+      <!-- Category -->
+      
+
+      <!-- Min Price -->
+      
+
+      <!-- Sort By -->
+      
+    </form>
+  </div>
+
+  <!-- Product Results Grid -->
+
+   <div class="p-4">
+                 
+
+
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div th:each="product : ${products}"
+         class="bg-red-100 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+      <img th:src="${product.images}"
+           alt="Product Image"
+           class="h-64 w-3/4 object-fill object-center mx-auto mt-4 rounded-lg shadow-sm">
+      <div class="p-4">
+        <h5 class="font-semibold text-lg mb-1" th:text="${product.name}">Product Name</h5>
+        <p class="text-gray-600 text-sm mb-3" th:text="${product.description}">Description</p>
+        <div class="flex justify-between items-center">
+         <span class="text-lg font-bold text-gray-900" th:text="${'₹' + product.sellingPrice}"></span>
+                            <span th:if="${product.MRPprice > product.sellingPrice}" class="text-sm text-gray-500 line-through" th:text="${'₹' + product.MRPprice}"></span>
+                            <span th:if="${product.discountPrice > 0}" class="text-sm text-green-600 ml-2" th:text="${'Save ₹' + product.discountPrice}"></span>
+          
+        </div>
+         <div class="flex justify-between items-center mt-2">
+                            <span th:text="${'Stock: ' + product.quantity}" 
+                                  th:class="${product.quantity > 0 ? 'text-green-600' : 'text-red-600'}"
+                                  class="text-sm font-medium"></span>
+                            <span class="text-sm text-gray-500" 
+                                  th:text="${#temporals.format(product.createdAt, 'dd MMM yyyy')}"></span>
+                        </div>
+                          <div class="pt-4 flex space-x-2">
+                            <a th:href="@{'/user/cart/add/' + ${product.id}}"
+                               class="flex-1 bg-red-800 text-white text-center py-2 rounded-lg text-sm font-medium hover:bg-gray-900 transition">
+                                Add to Cart
+                            </a>
+                           
+                            <a th:href="@{/user/products/view/{id}(id=${product.id})}"
+                               class="px-3 py-2 border border-gray-900 rounded-lg hover:bg-white transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </a>
+                            <button type="button"
+                                th:onclick="|openAISummary(${product.id})|"
+                                class="flex-1 bg-gray-900 text-white text-center py-2 rounded-lg text-sm font-medium hover:bg-red-800 transition">
+                           AI 
+                        </button>
+                             
+                        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav th:if="${products.totalPages > 1}" class="mt-8 flex justify-center">
+    <ul class="flex space-x-2">
+      <li th:classappend="${!products.hasPrevious()} ? 'opacity-50 pointer-events-none'">
+        <a class="px-3 py-1 bg-white border rounded-md hover:bg-pink-100 transition"
+           th:href="@{/search(page=${products.number - 1}, size=${criteria.pageSize},
+               keyword=${criteria.keyword}, category=${criteria.category},
+               minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice},
+               sortBy=${criteria.sortBy})}">
+          Previous
+        </a>
+      </li>
+
+      <li th:each="pageNumber : ${#numbers.sequence(0, products.totalPages - 1)}"
+          th:classappend="${pageNumber == products.number} ? 'bg-pink-500 text-white' : 'bg-white'">
+        <a class="px-3 py-1 border rounded-md hover:bg-pink-100 transition"
+           th:href="@{/search(page=${pageNumber}, size=${criteria.pageSize},
+               keyword=${criteria.keyword}, category=${criteria.category},
+               minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice},
+               sortBy=${criteria.sortBy})}"
+           th:text="${pageNumber + 1}">
+        </a>
+      </li>
+
+      <li th:classappend="${!products.hasNext()} ? 'opacity-50 pointer-events-none'">
+        <a class="px-3 py-1 bg-white border rounded-md hover:bg-pink-100 transition"
+           th:href="@{/search(page=${products.number + 1}, size=${criteria.pageSize},
+               keyword=${criteria.keyword}, category=${criteria.category},
+               minPrice=${criteria.minPrice}, maxPrice=${criteria.maxPrice},
+               sortBy=${criteria.sortBy})}">
+          Next
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+</div>
+</body>
+</html>

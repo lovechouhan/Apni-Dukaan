@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ layout:decorate="~{base}"
+
+>
+
+<head>
+    <title>register</title>
+</head>
+<body>
+    <!--
+      Register Page Features:
+      - Responsive two-column layout (illustration + form)
+      - Illustration on the left for visual appeal
+      - Registration form on the right with all required fields
+      - Form fields: Full Name, Mobile, Email, Address, City, State, PIN Code, Password, Confirm Password, Profile Image
+      - Register button styled in red
+      - Links for Forgot Password and Login
+      - Uses Tailwind CSS for styling
+      - Inherits background, navbar, and footer from base.html
+    -->
+    <div layout:fragment="content" class="flex flex-col md:flex-row items-center justify-center min-h-screen">
+        <!-- Illustration section -->
+        <div class="w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
+            <!-- Lottie/illustration image -->
+            <img th:src="@{/images/ApniDukkan.png}" alt="24/7 Service" class="w-96 h-96 object-contain" />
+        </div>
+        <!-- Registration form section -->
+        <div class="w-full md:w-1/2 flex justify-center">
+            <form th:object="${userForm}" th:action="@{/register}" method="post" enctype="multipart/form-data" class="bg-red-500 rounded-lg shadow-lg p-8 w-full max-w-md">
+                <!-- Form title -->
+                <h2 class="text-2xl font-semibold text-center text-white mb-6 border-b pb-2">Register</h2>
+                <!-- Form fields grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <!-- Full Name -->
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-1">Full Name</label>
+                        <input type="text" name="name" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <!-- Mobile -->
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-1">Mobile</label>
+                        <input type="text" name="phoneNumber" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <!-- Email -->
+                    <div class="md:col-span-2">
+                        <label class="block text-white text-sm font-medium mb-1">Email</label>
+                        <input type="email" name="email" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <!-- Address -->
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-1">Address</label>
+                        <input type="text" name="address" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <!-- City -->
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-1">City</label>
+                        <input type="text" name="city" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <!-- State -->
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-1">State</label>
+                        <input type="text" name="state" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <!-- PIN Code -->
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-1">PIN Code</label>
+                        <input type="text" name="pincode" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-1">Password</label>
+                        <input type="password" name="password" class="w-full border rounded px-3 py-2" required />
+                    </div>
+                    
+                    <!-- Profile Image -->
+                    <div class="md:col-span-2">
+                        <label class="block text-white text-sm font-medium mb-1">Profile Image</label>
+                        <input type="file" id="profilePic" name="profilePic" accept="image/*" class="w-full" />
+                    </div>
+                </div>
+                <!-- Register button -->
+                <button type="submit" class="w-full bg-white hover:bg-gray-900 text-red-800 font-semibold py-2 rounded mb-2">Register</button>
+
+                
+                <!-- Links for forgot password and login -->
+                <div class="flex flex-col items-center mt-2">
+                    <!-- <a href="#" class="text-white text-sm hover:underline">Forgot Password ?</a> -->
+                    <span class="text-sm mt-1 text-white">Already have an account ? <a th:href="@{'/login'}" class="text-white hover:underline">Login</a></span>
+                    <span class="text-sm mt-1 text-white">OR</span>
+                    <a th:href="@{'/sellers/sellerRegister'}" class="text-white hover:underline">Register as Seller</a>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</body>
+</html>

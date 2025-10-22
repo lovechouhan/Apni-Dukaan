@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{base}">
+
+<head>
+    <title>Product Details</title>
+</head>
+
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-red-300 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Error Message -->
+            <div th:if="${error}" class="bg-red-300 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline" th:text="${error}"></span>
+            </div>
+
+            <!-- Product Details -->
+            <div th:if="${product}" class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <!-- Product Header -->
+                <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h1 class="text-2xl font-bold text-gray-900" th:text="${product.name}">Product Name</h1>
+                        <div class="flex space-x-2">
+                            <a th:href="@{/sellers/products/edit/{id}(id=${product.id})}"
+                                class="bg-red-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition-colors flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Edit
+                            </a>
+                            <button onclick="confirmDelete()"
+                                class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Content -->
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Product Images -->
+                        <div>
+                           
+                            <!-- <div class="mt-4 grid grid-cols-4 gap-2" th:if="${not #lists.isEmpty(product.images)}"> -->
+                                <div th:each="image : ${product.images}" class="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden w-fit">
+                                    <img th:src="${image}" class="object-cover hover:opacity-75 cursor-pointer w-fit" alt="Product Image" />
+                                </div>
+                            <!-- </div> -->
+                        </div>
+
+                        <!-- Product Information -->
+                        <div class="space-y-6">
+                            <!-- Basic Information -->
+                            <div>
+                                <h2 class="text-gray-500 text-sm">Description</h2>
+                                <p class="mt-1 text-gray-900" th:text="${product.description}">Description</p>
+                            </div>
+
+                            <!-- Pricing -->
+                            <div class="border-t border-gray-200 pt-4">
+                                <h2 class="text-gray-500 text-sm">Pricing</h2>
+                                <div class="mt-2 flex items-baseline space-x-4">
+                                    <span class="text-3xl font-bold text-gray-900">₹[[${product.sellingPrice}]]</span>
+                                    <span class="text-xl text-gray-500 line-through"
+                                        th:if="${product.MRPprice > product.sellingPrice}">₹[[${product.MRPprice}]]</span>
+                                    <span class="text-green-600 font-medium"
+                                        th:if="${product.discountPrice > 0}">[[${product.MRPprice - product.sellingPrice}]]rs OFF</span>
+                                </div>
+                            </div>
+
+                            <!-- Stock -->
+                            <div class="border-t border-gray-200 pt-4">
+                                <h2 class="text-gray-500 text-sm">Stock Status</h2>
+                                <div class="mt-2 flex items-center space-x-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                        th:classappend="${product.quantity > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                        [[${product.quantity > 0 ? 'In Stock' : 'Out of Stock'}]]
+                                    </span>
+                                    <span class="text-gray-900">[[${product.quantity}]] units available</span>
+                                </div>
+                            </div>
+
+                            <!-- Additional Details -->
+                            <div class="border-t border-gray-200 pt-4 space-y-4">
+                                <div>
+                                    <h2 class="text-gray-500 text-sm">Brand</h2>
+                                    <p class="mt-1 text-gray-900" th:text="${product.brand}">Brand Name</p>
+                                </div>
+                                <div>
+                                    <h2 class="text-gray-500 text-sm">Color</h2>
+                                    <p class="mt-1 text-gray-900" th:text="${product.color}">Color</p>
+                                </div>
+                                <!-- <div th:if="${not #lists.isEmpty(product.sizes)}">
+                                    <h2 class="text-gray-500 text-sm">Available Sizes</h2>
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        <span th:each="size : ${product.sizes}"
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                                            [[${size}]]
+                                        </span>
+                                    </div>
+                                </div> -->
+                            </div>
+
+                            <!-- Created Date -->
+                            <div class="border-t border-gray-200 pt-4">
+                                <h2 class="text-gray-500 text-sm">Listed On</h2>
+                                <p class="mt-1 text-gray-900" th:text="${#temporals.format(product.createdAt, 'dd MMMM yyyy')}">
+                                    Date</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews and Ratings Section -->
+                    <div class="mt-8 border-t border-gray-200 pt-8" th:if="${not #lists.isEmpty(product.reviews)}">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Customer Reviews</h2>
+                        <div class="space-y-6">
+                            <div th:each="review : ${product.reviews}" class="bg-gray-50 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-medium text-gray-900">[[${review.user.name}]]</h3>
+                                        <p class="mt-1 text-sm text-gray-600">[[${review.comment}]]</p>
+                                        <div class="mt-2 text-sm text-gray-500">
+                                            [[${#temporals.format(review.createdAt, 'dd MMM yyyy')}]]
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Rating: [[${review.rating}]]/5
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <script th:inline="javascript">
+        function confirmDelete() {
+            if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+                const productId = /*[[${product.id}]]*/ null;
+                fetch(`/sellers/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = '/sellers/getProducts';
+                        } else {
+                            throw new Error('Failed to delete product');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error deleting product: ' + error.message);
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>

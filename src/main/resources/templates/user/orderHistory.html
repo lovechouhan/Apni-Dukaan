@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ layout:decorate="~{base}">
+<head>
+    <title>Order History - ApniDukkan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-red-300 py-8 px-4">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center">
+                    <i class="fas fa-history text-3xl text-red-800 mr-3"></i>
+                    <h1 class="text-2xl font-bold text-gray-900">Order History</h1>
+                </div>
+                <!-- Filter and Search -->
+                <div class="flex space-x-4">
+                    <select id="statusFilter" class="rounded-lg border-gray-300 text-gray-700 focus:ring-red-500 focus:border-red-500">
+                        <option value="">All Orders</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="PROCESSING">Processing</option>
+                        <option value="SHIPPED">Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                    <input type="text" id="searchOrder" placeholder="Search orders..."
+                           class="rounded-lg border-gray-300 focus:ring-red-500 focus:border-red-500"/>
+                </div>
+            </div>
+
+            <!-- No Orders Message -->
+            <div th:if="${#lists.isEmpty(orders)}" class="bg-white rounded-lg p-8 text-center">
+                <i class="fas fa-box-open text-6xl text-red-800 mb-4"></i>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-2">No Orders Yet</h2>
+                <p class="text-gray-600 mb-4">You haven't placed any orders yet.</p>
+                <a th:href="@{/user/products}" class="inline-block bg-red-800 text-white px-6 py-2 rounded-lg hover:bg-red-700">
+                    Start Shopping
+                </a>
+            </div>
+
+            <!-- Orders List -->
+            <div th:unless="${#lists.isEmpty(orders)}" class="space-y-6">
+                <!-- Order Card -->
+                <div th:each="order : ${orders}" th:data-order-status="${order.status}"
+                     th:data-order-number="${order.orderNumber}"
+                     class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <!-- Order Header -->
+                    <div class="bg-red-800 text-white px-6 py-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-sm">Order #</span>
+                                <span class="font-semibold" th:text="${order.orderNumber}">ORD123456</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div>
+                                    <span class="text-sm">Ordered on</span>
+                                    <span class="font-semibold" th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy')}">
+                                        01 Jan 2025
+                                    </span>
+                                </div>
+                                <div th:switch="${order.status}" 
+                                     class="px-3 py-1 rounded-full text-sm font-semibold"
+                                     th:classappend="${
+                                         order.status == 'DELIVERED' ? 'bg-green-500' : 
+                                         order.status == 'SHIPPED' ? 'bg-blue-500' :
+                                         order.status == 'PROCESSING' ? 'bg-yellow-500' :
+                                         order.status == 'CANCELLED' ? 'bg-red-500' :
+                                         'bg-gray-500'
+                                     }">
+                                    <span th:text="${order.status}">Status</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="p-6">
+                        <div class="divide-y">
+                            <div th:each="item : ${order.items}" class="py-4 first:pt-0 last:pb-0">
+                                <div class="flex items-center">
+                                    <img th:src="${item.product.imageUrl}" alt="Product Image"
+                                         class="w-20 h-20 object-cover rounded-lg"/>
+                                    <div class="ml-4 flex-1">
+                                        <h3 class="font-semibold text-gray-900" th:text="${item.product.name}">
+                                            Product Name
+                                        </h3>
+                                        <p class="text-sm text-gray-600" th:text="${item.product.description}">
+                                            Product Description
+                                        </p>
+                                        <div class="mt-1 flex items-center justify-between">
+                                            <div class="text-sm text-gray-600">
+                                                Qty: <span th:text="${item.quantity}">1</span> ×
+                                                ₹<span th:text="${item.price}">499</span>
+                                            </div>
+                                            <div class="font-semibold text-gray-900">
+                                                ₹<span th:text="${item.quantity * item.price}">499</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Footer -->
+                    <div class="bg-gray-50 px-6 py-4">
+                        <div class="flex justify-between items-center">
+                            <div class="space-y-1">
+                                <p class="text-sm text-gray-600">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    Delivered to: <span th:text="${order.shippingAddress}">Address</span>
+                                </p>
+                                <p class="text-sm text-gray-600">
+                                    <i class="fas fa-phone mr-2"></i>
+                                    Contact: <span th:text="${order.contactNumber}">1234567890</span>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-600">Total Amount</p>
+                                <p class="text-2xl font-bold text-gray-900">
+                                    ₹<span th:text="${order.totalAmount}">999</span>
+                                </p>
+                                <!-- Action Buttons -->
+                                <div class="mt-2 space-x-2" th:if="${order.status == 'DELIVERED'}">
+                                    <a th:href="@{'/user/order/invoice/' + ${order.id}}" 
+                                       class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                        <i class="fas fa-download mr-2"></i>Invoice
+                                    </a>
+                                    <button th:if="${!order.reviewed}" 
+                                            th:onclick="'showReviewModal(' + ${order.id} + ')'"
+                                            class="inline-flex items-center px-3 py-1 bg-red-800 text-white rounded-lg hover:bg-red-700">
+                                        <i class="fas fa-star mr-2"></i>Review
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Modal -->
+            <div id="reviewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Write a Review</h3>
+                            <form id="reviewForm" th:action="@{/user/order/review}" method="post">
+                                <input type="hidden" id="orderId" name="orderId"/>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Rating</label>
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            <div class="star-rating">
+                                                <!-- Stars will be handled by JavaScript -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Your Review</label>
+                                        <textarea name="review" rows="4" required
+                                                  class="mt-1 block w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500"></textarea>
+                                    </div>
+                                </div>
+                                <div class="mt-6 flex justify-end space-x-3">
+                                    <button type="button" onclick="hideReviewModal()"
+                                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                        Cancel
+                                    </button>
+                                    <button type="submit"
+                                            class="px-4 py-2 bg-red-800 text-white rounded-md hover:bg-red-700">
+                                        Submit Review
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter orders by status
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const status = this.value;
+            const orders = document.querySelectorAll('[data-order-status]');
+            orders.forEach(order => {
+                if (!status || order.dataset.orderStatus === status) {
+                    order.style.display = 'block';
+                } else {
+                    order.style.display = 'none';
+                }
+            });
+        });
+
+        // Search orders
+        document.getElementById('searchOrder').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const orders = document.querySelectorAll('[data-order-number]');
+            orders.forEach(order => {
+                const orderNumber = order.dataset.orderNumber.toLowerCase();
+                if (orderNumber.includes(searchTerm)) {
+                    order.style.display = 'block';
+                } else {
+                    order.style.display = 'none';
+                }
+            });
+        });
+
+        // Review Modal Functions
+        function showReviewModal(orderId) {
+            document.getElementById('orderId').value = orderId;
+            document.getElementById('reviewModal').classList.remove('hidden');
+        }
+
+        function hideReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+        }
+
+        // Star Rating System
+        const starRating = document.querySelector('.star-rating');
+        let rating = 0;
+
+        // Create stars
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('button');
+            star.type = 'button';
+            star.classList.add('text-2xl', 'focus:outline-none');
+            star.innerHTML = '☆';
+            star.dataset.value = i;
+            
+            star.addEventListener('click', function() {
+                rating = this.dataset.value;
+                updateStars();
+            });
+
+            star.addEventListener('mouseover', function() {
+                hoverStars(this.dataset.value);
+            });
+
+            star.addEventListener('mouseout', function() {
+                hoverStars(rating);
+            });
+
+            starRating.appendChild(star);
+        }
+
+        function updateStars() {
+            const stars = starRating.children;
+            for (let i = 0; i < stars.length; i++) {
+                stars[i].innerHTML = i < rating ? '★' : '☆';
+                stars[i].classList.toggle('text-yellow-400', i < rating);
+            }
+        }
+
+        function hoverStars(value) {
+            const stars = starRating.children;
+            for (let i = 0; i < stars.length; i++) {
+                stars[i].innerHTML = i < value ? '★' : '☆';
+                stars[i].classList.toggle('text-yellow-400', i < value);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+Authentication / Security related
+
+POST /api/auth/login → username/password se login (JWT milega response me)
+
+POST /register → new user register karega (agar register controller bana hai)
+
+POST /authenticate → form-login ke liye (Spring Security use karega)
+
+GET /login → login page (HTML/Thymeleaf)
+
+GET /logout → logout (redirect karega login pe)
+
+GET /oauth2/authorization/google → Google login ka entry point
+
+GET /login/oauth2/code/google → Google callback
+
+📦 Product APIs
+
+GET /api/v1/products → sab products ka list (JWT token required)
+
+GET /api/v1/products/id/{id} → ek specific product by ID (JWT required)
+
+POST /api/v1/products → new product add karna (JWT required, shayad ADMIN role chahiye ho)
+
+PUT /api/v1/products/{id} → update product (JWT required)
+
+DELETE /api/v1/products/{id} → delete product (JWT required)
+
+👤 User related
+
+GET /user/main → login ke baad redirect hone wala page (HTML view)
+
+GET /api/v1/users/{id} (agar banaya ho) → user ka detail JSON me
+
+GET /api/v1/users/me (agar implement ho) → logged-in user ka profile
+
+🛠 Extra
+
+GET /css/** → static CSS files (public)
+
+GET /js/** → static JS files (public)
+
+⚠️ Important:
+
+/api/** wale endpoints JSON return karte hain (JWT required hoga mostly).
+
+/login, /register, /user/main wale HTML pages return karenge (form login / OAuth2 ke liye).
+
+👉 Tu chaahe to mai Swagger/OpenAPI add karwa deta hu, jisse saari API endpoints ek UI me dikhenge. Kya mai tere project me springdoc-openapi setup karke de du?

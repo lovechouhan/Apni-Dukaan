@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ layout:decorate="~{base}">
+<head>
+  <title>Explore Fashion Categories</title>
+</head>
+<body>
+  
+
+
+    <div layout:fragment="content" class="min-h-screen overflow-auto">
+      
+
+      <div class="category-section grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto max-w-7xl px-4 my-8">
+        <!-- Main Categories -->
+        <a href="/products/men" class="category-card bg-gray-300 p-6 rounded-lg shadow hover:bg-white transition">
+          <img th:src="@{/images/image.png}" alt="Men's Fashion" class="w-full h-48 object-cover rounded-md mb-3">
+          <h2 class="text-xl font-bold mb-2">Men's</h2>
+          <p>Shop the latest for men</p>
+        </a>
+        <a href="/products/women" class="category-card bg-gray-300 p-6 rounded-lg shadow hover:bg-white transition">
+          <img th:src="@{/images/womens1.png}" alt="Women's Fashion" class="w-full h-48 object-cover rounded-md mb-3">
+          <h2 class="text-xl font-bold mb-2">Women's</h2>
+          <p>Discover styles for women</p>
+        </a>
+        <a href="/products/kids" class="category-card bg-gray-300 p-6 rounded-lg shadow hover:bg-white transition">
+          <img th:src="@{/images/kidz.png}" alt="Kids Fashion" class="w-full h-48 object-cover rounded-md mb-3">
+          <h2 class="text-xl font-bold mb-2">Kids</h2>
+          <p>Trendy picks for kids</p>
+        </a>
+        
+        <!-- Electronics Category -->
+        <a href="/products/electronics" class="category-card bg-gray-300 p-6 rounded-lg shadow hover:bg-white transition">
+          <img th:src="@{/images/LED.png}" alt="Electronics" class="w-full h-48 object-cover rounded-md mb-3">
+          <h2 class="text-xl font-bold mb-2">Electronics</h2>
+          <p>Latest gadgets and devices</p>
+        </a>
+        
+        <!-- Accessories Category -->
+        <a href="/products/accessories" class="category-card bg-gray-300 p-6 rounded-lg shadow hover:bg-white transition">
+          <img th:src="@{/images/acc.png}" alt="Accessories" class="w-full h-48 object-cover rounded-md mb-3">
+          <h2 class="text-xl font-bold mb-2">Accessories</h2>
+          <p>Watches, jewelry & more</p>
+        </a>
+        
+        <!-- Footwear Category -->
+        <a href="/products/footwear" class="category-card bg-gray-300 p-6 rounded-lg shadow hover:bg-white transition">
+          <img th:src="@{/images/footwear.png}" alt="Footwear" class="w-full h-48 object-cover rounded-md mb-3">
+          <h2 class="text-xl font-bold mb-2">Footwear</h2>
+          <p>Sneakers, shoes & more</p>
+        </a>
+        
+        <!-- Bags Category -->
+        <a href="/products/bags" class="category-card bg-gray-300 p-6 rounded-lg shadow hover:bg-white transition">
+          <img th:src="@{/images/bags.png}" alt="Bags" class="w-full h-48 object-cover rounded-md mb-3">
+          <h2 class="text-xl font-bold mb-2">Bags</h2>
+          <p>Backpacks & handbags</p>
+        </a>
+        
+        <!-- Audio Category -->
+        <a href="/products/audio" class="category-card bg-gray-300 p-6 rounded-lg shadow hover:bg-white transition">
+          <img th:src="@{/images/audio.png}" alt="Audio" class="w-full h-48 object-cover rounded-md mb-3">
+          <h2 class="text-xl font-bold mb-2">Audio</h2>
+          <p>Headphones & speakers</p>
+        </a>
+      </div>
+      
+      <!-- Filter Section -->
+    
+
+
+
+      </div> 
+
+
+</body>
+</html>

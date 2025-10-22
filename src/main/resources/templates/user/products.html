@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Our Store</title>
+    <!-- Include your CSS files here -->
+</head>
+<body>
+    <!-- Include header fragment -->
+    <div th:replace="~{user/header :: header}"></div>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Categories Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Categories</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Men's Fashion -->
+                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <a href="#" class="block">
+                        <img th:src="@{/images/mens1.jpg}" alt="Men's Fashion" class="w-full h-48 object-cover rounded-md mb-3">
+                        <h3 class="text-lg font-semibold">Men's Fashion</h3>
+                        <p class="text-gray-600 text-sm">Shirts, Pants, Suits & more</p>
+                    </a>
+                </div>
+
+                <!-- Women's Fashion -->
+                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <a href="#" class="block">
+                        <img th:src="@{/images/womens1.jpg}" alt="Women's Fashion" class="w-full h-48 object-cover rounded-md mb-3">
+                        <h3 class="text-lg font-semibold">Women's Fashion</h3>
+                        <p class="text-gray-600 text-sm">Dresses, Tops, Accessories</p>
+                    </a>
+                </div>
+
+                <!-- Electronics -->
+                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <a href="#" class="block">
+                        <img th:src="@{/images/speaker.png}" alt="Electronics" class="w-full h-48 object-cover rounded-md mb-3">
+                        <h3 class="text-lg font-semibold">Electronics</h3>
+                        <p class="text-gray-600 text-sm">Gadgets, Accessories & more</p>
+                    </a>
+                </div>
+
+                <!-- Accessories -->
+                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <a href="#" class="block">
+                        <img th:src="@{/images/watch.jpeg}" alt="Accessories" class="w-full h-48 object-cover rounded-md mb-3">
+                        <h3 class="text-lg font-semibold">Accessories</h3>
+                        <p class="text-gray-600 text-sm">Watches, Jewelry & more</p>
+                    </a>
+                </div>
+
+                <!-- Footwear -->
+                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <a href="#" class="block">
+                        <img th:src="@{/images/sneaker.jpeg}" alt="Footwear" class="w-full h-48 object-cover rounded-md mb-3">
+                        <h3 class="text-lg font-semibold">Footwear</h3>
+                        <p class="text-gray-600 text-sm">Sneakers, Formal Shoes & more</p>
+                    </a>
+                </div>
+
+                <!-- Bags -->
+                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <a href="#" class="block">
+                        <img th:src="@{/images/backpack.jpeg}" alt="Bags" class="w-full h-48 object-cover rounded-md mb-3">
+                        <h3 class="text-lg font-semibold">Bags</h3>
+                        <p class="text-gray-600 text-sm">Backpacks, Handbags & more</p>
+                    </a>
+                </div>
+
+                <!-- Audio -->
+                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <a href="#" class="block">
+                        <img th:src="@{/images/ear.jpeg}" alt="Audio" class="w-full h-48 object-cover rounded-md mb-3">
+                        <h3 class="text-lg font-semibold">Audio</h3>
+                        <p class="text-gray-600 text-sm">Headphones, Speakers & more</p>
+                    </a>
+                </div>
+
+                <!-- Fashion Accessories -->
+                <div class="category-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <a href="#" class="block">
+                        <img th:src="@{/images/fashion.jpeg}" alt="Fashion Accessories" class="w-full h-48 object-cover rounded-md mb-3">
+                        <h3 class="text-lg font-semibold">Fashion Accessories</h3>
+                        <p class="text-gray-600 text-sm">Belts, Sunglasses & more</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Filters -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Filters</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Price Range -->
+                <div class="filter-group">
+                    <h3 class="font-semibold mb-2">Price Range</h3>
+                    <select class="w-full p-2 border rounded">
+                        <option>All Prices</option>
+                        <option>Under ₹500</option>
+                        <option>₹500 - ₹1000</option>
+                        <option>₹1000 - ₹2000</option>
+                        <option>Above ₹2000</option>
+                    </select>
+                </div>
+
+                <!-- Brand -->
+                <div class="filter-group">
+                    <h3 class="font-semibold mb-2">Brand</h3>
+                    <select class="w-full p-2 border rounded">
+                        <option>All Brands</option>
+                        <option>Nike</option>
+                        <option>Adidas</option>
+                        <option>Puma</option>
+                        <option>Levi's</option>
+                    </select>
+                </div>
+
+                <!-- Size -->
+                <div class="filter-group">
+                    <h3 class="font-semibold mb-2">Size</h3>
+                    <select class="w-full p-2 border rounded">
+                        <option>All Sizes</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                    </select>
+                </div>
+
+                <!-- Sort By -->
+                <div class="filter-group">
+                    <h3 class="font-semibold mb-2">Sort By</h3>
+                    <select class="w-full p-2 border rounded">
+                        <option>Featured</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Newest First</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid will be added here -->
+        <div class="products-grid">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <!-- Include footer fragment -->
+    <div th:replace="~{user/footer :: footer}"></div>
+</body>
+</html>

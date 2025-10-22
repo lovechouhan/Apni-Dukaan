@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Base Layout</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+
+    <!-- sweetalert2 animation -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body class="min-h-screen flex flex-col bg-red-300">
+
+  <header>
+      <div th:if="${loggedInUser}">
+          <div th:replace="~{navbar :: navbar}"></div>
+      </div>
+  </header>
+
+  <div th:if="${loggedInUser}">
+    <div th:replace="~{user/chatbot :: chatbot}"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <div th:if="${loggedInUser != null}">
+    <div th:if="${userRole == 'ROLE_USER'}">
+      <div th:replace="~{user/user-sidebar :: userSidebar}"></div>
+    </div>
+
+    
+
+    <div th:if="${userRole == 'ROLE_SELLER'}">
+      <div th:replace="~{seller/seller-sidebar :: sellerSidebar}"></div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="flex-1 pt-16 transition-all duration-300">
+    <div layout:fragment="content"></div>
+  </main>
+
+  <!-- Footer -->
+  <div th:replace="~{footerr :: footer}"></div>
+
+
+<div id="ai-summary-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-gray-900 rounded-lg w-11/12 md:w-1/2 p-6 relative">
+        <button onclick="closeAISummary()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">&times;</button>
+        <h3 class="text-xl font-bold mb-4 text-white">Product AI Summary</h3>
+        <div id="ai-summary-content" class="text-white">
+            Loading...
+        </div>
+    </div>
+</div>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+        window.openAISummary = async function(productId) {
+            const modal = document.getElementById('ai-summary-modal');
+            const content = document.getElementById('ai-summary-content');
+            modal.classList.remove('hidden');
+            content.innerHTML = 'Loading...';
+
+            try {
+                // POST to the API endpoint implemented in ProductAIController
+                const base = /*[[@{/}]]*/ '/'; // resolves to context-aware "/"
+                const resp = await fetch(base.replace(/\/$/, '') + '/api/ai-summary/' + productId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!resp.ok) {
+                    const text = await resp.text();
+                    throw new Error('Server error: ' + resp.status + ' ' + text);
+                }
+
+                const data = await resp.json();
+                // Expecting { summary: '...', description: '...' }
+                content.innerHTML = '<h4 class="font-semibold">Summary</h4>' +
+                    '<p class="mt-2 text-sm text-black">' + (data.summary || 'No summary returned') + '</p>' +
+                    '<hr class="my-3">' +
+                    '<h4 class="font-semibold">Description</h4>' +
+                    '<p class="mt-2 text-sm text-black">' + (data.description || 'No description returned') + '</p>';
+
+            } catch (err) {
+                console.error(err);
+                content.innerHTML = '<p class="text-red-600">Failed to load AI summary. ' + (err.message || '') + '</p>';
+            }
+        }
+
+        window.closeAISummary = function() {
+            const modal = document.getElementById('ai-summary-modal');
+            modal.classList.add('hidden');
+        }
+    /*]]>*/
+    </script>
+
+
+
+  <script th:if="${alertMessage != null}" th:inline="javascript">
+  Swal.fire({
+    title: /*[[${alertTitle}]]*/ '',
+    text: /*[[${alertMessage}]]*/ '',
+    icon: /*[[${alertType}]]*/ 'info',
+    confirmButtonText: 'OK'
+  });
+</script>
+
+  <!-- Fallback: show success/info message if 'message' is present -->
+  <script th:if="${message != null}" th:inline="javascript">
+  Swal.fire({
+    title: 'Success',
+    text: /*[[${message}]]*/ '',
+    icon: 'success',
+    confirmButtonText: 'OK'
+  });
+  </script>
+
+  <!-- Fallback: show error alert if 'error' is present -->
+  <script th:if="${error != null}" th:inline="javascript">
+  Swal.fire({
+    title: 'Error',
+    text: /*[[${error}]]*/ '',
+    icon: 'error',
+    confirmButtonText: 'OK'
+  });
+  </script>
+
+
+
+ 
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+</body>
+
+</html>

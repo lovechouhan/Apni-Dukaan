@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+ layout:decorate="~{base}">
+<head>
+    <title>User Settings - ApniDukkan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div layout:fragment="content" class="min-h-screen bg-red-300">
+        <a th:href="@{/user/main}" class="inline-flex items-center bg-red-800 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>Back
+        </a>
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex items-center mb-6">
+                <i class="fas fa-cog text-2xl text-gray-900 mr-3"></i>
+                <h1 class="text-2xl font-bold text-gray-900">User Settings</h1>
+            </div>
+            
+            <!-- Success Message -->
+            <div th:if="${message}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
+                <span class="block sm:inline" th:text="${message}"></span>
+                <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Settings Navigation -->
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-1/4">
+                    <nav class="flex flex-col space-y-2">
+                        <a th:href="@{/user/settings/account}"
+                           class="text-white bg-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
+                           <i class="fas fa-user mr-2"></i> Account Info
+                        </a>
+                        <a th:href="@{/user/settings/password}"
+                           class="text-white bg-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
+                           <i class="fas fa-key mr-2"></i> Password Management
+                        </a>
+                       
+                    </nav>
+                </div>
+
+                
+
+                        
+                  
+             
+            </div>
+        </div>
+    </div>
+</body>
+</html>
