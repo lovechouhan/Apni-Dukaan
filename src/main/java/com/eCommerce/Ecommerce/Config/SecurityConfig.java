@@ -1,5 +1,7 @@
 package com.eCommerce.Ecommerce.Config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,106 +23,100 @@ import com.eCommerce.Ecommerce.Services.SecurityCustomUserDetailsService;
 @Configuration
 public class SecurityConfig {
 
-        // using jwt authentication with spring security
-        @Autowired
-        private JwtAuthenticationEntryPoint point;
-        @Autowired
-        private JwtAuthenticationFilter filter;
+    @Autowired
+    private JwtAuthenticationEntryPoint point;
 
-        // Register JwtAuthenticationFilter as a bean
+    @Autowired
+    private JwtAuthenticationFilter filter;
 
-        // default spring security
-        @Autowired
-        private SecurityCustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private SecurityCustomUserDetailsService customUserDetailsService;
 
-        @Autowired
-        private OAuthenticationSuccessHandler handler;
+    @Autowired
+    private OAuthenticationSuccessHandler handler;
 
-        @Autowired
-        private AuthFailureHandler authFailureHandler;
+    @Autowired
+    private AuthFailureHandler authFailureHandler;
 
-        // Configuration of Authentication Provider for spring security
-        // DB se user ko extract krna hain
-        @Bean
-        public DaoAuthenticationProvider authenticationProvider() {
-                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-                // user detail service ka object paas karna hai
-                provider.setUserDetailsService(customUserDetailsService);
-                // password encoder ka object set karna hai
-                provider.setPasswordEncoder(passwordEncoder());
-                return provider;
-        }
+    // ✅ Authentication Provider
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(customUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
 
-        // configure your security filter chain here
-        // user konse pages and url configure kr payega
+    // ✅ CORS Configuration (Improved)
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
 
-       
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "https://apni-dukaan-production.up.railway.app",
+                "http://localhost:8080",
+                "http://localhost:3000"
+        ));
 
-        @Bean
-        public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-                org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-                configuration.addAllowedOrigin("http://localhost:3000"); // Frontend URL
-                configuration.addAllowedOrigin("http://localhost:8080"); // Backend URL
-                configuration.addAllowedMethod("GET");
-                configuration.addAllowedMethod("POST");
-                configuration.addAllowedMethod("PUT");
-                configuration.addAllowedMethod("DELETE");
-                configuration.addAllowedMethod("OPTIONS");
-                configuration.addAllowedHeader("Authorization");
-                configuration.addAllowedHeader("Content-Type");
-                configuration.addAllowedHeader("Accept");
-                configuration.setAllowCredentials(true);
-                configuration.setMaxAge(3600L); // 1 hour
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L); // 1 hour
 
-                org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-                source.registerCorsConfiguration("/**", configuration);
-                return source;
-        }
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source =
+                new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
-        @Bean
-        @Order(2)
-        public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
-                http
-                                .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/login", "/register", "/verify-otp", "/sellers/sellerRegister","/sellers/verify-seller-otp",
-                                                "/sellers/register","/sellers/verify-otp", "/otp", "/oauth2/**", "/css/**",
-                                                "/js/**", "/images/**", "/products/**").permitAll()
-                                                .requestMatchers("/user/**").authenticated()  
-                                                  .requestMatchers("/user/cart/**").authenticated()  // 👈 cart pages
-                                                  
-                                                
-                                               // .requestMatchers("/sellers/**").hasRole("SELLER")
-                                                .anyRequest().authenticated())
-                                .formLogin(form -> form
-                                                .loginPage("/login")
-                                                .loginProcessingUrl("/authenticate")
-                                                .defaultSuccessUrl("/user/main", true)
-                                                .failureHandler(authFailureHandler)
-                                                .usernameParameter("email")
-                                                .passwordParameter("password")
-                                                .permitAll())
-                                .logout(logout -> logout
-                                                .logoutUrl("/logout")
-                                                .logoutSuccessUrl("/login?logout=true"))
-                                .oauth2Login(oauth -> oauth
-                                                .loginPage("/login")
-                                                .successHandler(handler))
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // 👈 this is the key
+    // ✅ Security Filter Chain
+    @Bean
+    @Order(2)
+    public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 👈 Enable CORS globally
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/login", "/register", "/verify-otp",
+                        "/sellers/sellerRegister", "/sellers/verify-seller-otp",
+                        "/sellers/register", "/sellers/verify-otp",
+                        "/otp", "/oauth2/**", "/css/**", "/js/**",
+                        "/images/**", "/products/**")
+                .permitAll()
+                .requestMatchers("/user/**", "/user/cart/**").authenticated()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/authenticate")
+                .defaultSuccessUrl("/user/main", true)
+                .failureHandler(authFailureHandler)
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+            )
+            .oauth2Login(oauth -> oauth
+                .loginPage("/login")
+                .successHandler(handler)
+            )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            )
+            .csrf(AbstractHttpConfigurer::disable);
 
-                                .csrf(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
 
-                return http.build();
-        }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder(); // NoOpPasswordEncoder is deprecated, use with caution
-        }
-
-        @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) throws Exception {
-                return builder.getAuthenticationManager();
-        }
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) throws Exception {
+        return builder.getAuthenticationManager();
+    }
 }
